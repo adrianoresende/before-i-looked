@@ -15,12 +15,43 @@ in a shell this agent can run.
    One issue per unit of work.
 3. **Stop and show the table to the human.** Publish nothing until they approve it.
 4. Ask the human what every issue here must carry (fields, labels, wording), unless it is
-   already written down in this session or in the repo.
+   already written down in this session or in the repo. The shape below is the one the human
+   approved for morning-digest; start from it.
 5. Create each issue in dependency order, so blocked-by can cite real numbers:
 
    ```sh
-   gh issue create --title "<title>" --body-file <tmp.md>
+   gh label create "plan:<plan>"   # once per plan, if it doesn't exist
+   gh issue create --title "<title>" --label "plan:<plan>" --body-file <tmp.md>
    ```
+
+## Issue shape
+
+Every issue carries the label `plan:<plan>` (the `plan:` key in `plan.md`'s frontmatter) and
+this body. The reviewer sorts by the first line, so it is always first:
+
+```md
+Source: plan.md § <n>
+
+## Scope
+
+<what this issue changes, and what it leaves to other issues>
+
+## Done when
+
+<the plan's "Done when", checkable>
+
+## Blocked by
+
+<#n, … or —; say what is needed to start and what is needed to close, if they differ>
+```
+
+- One issue per unit of work. Splitting a section is fine (the source line repeats); inventing
+  one is not.
+- A "Done when" that waits on someone outside the lane (a reviewer, a deploy) names that event:
+  "the reviewer has looked", not "the link is sent". The issue stays open until it happens, and
+  whatever depends on it (a clean-up) is blocked by it.
+- Commit with `closes #n` only when the commit itself makes "Done when" hold; GitHub closes
+  the issue on push, so add the closing comment right after.
 
 6. Record every issue URL from gh's output (not from memory) and reply with the list.
 
