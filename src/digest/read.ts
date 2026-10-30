@@ -9,7 +9,7 @@ function isStatus(value: unknown): value is RunStatus {
 }
 
 // The edge: one raw log line in, a RunLine or null (a bad line) out.
-function parseLine(text: string): RunLine | null {
+export function parseLine(text: string): RunLine | null {
   let value: unknown;
   try {
     value = JSON.parse(text);
